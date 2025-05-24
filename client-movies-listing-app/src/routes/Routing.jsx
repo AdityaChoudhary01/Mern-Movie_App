@@ -1,8 +1,8 @@
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DashBoard from "../components/DashBoard";
 import MovieProvider from "../utils/MovieContext";
-import { createBrowserRouter } from "react-router-dom";
-import AppLayout from "../components/AppLayout";
+import { Outlet, createBrowserRouter } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
 import HomePage from "../pages/HomePage";
 import {
@@ -16,7 +16,17 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/forgotPassword/ForgotPassword";
 import ConfirmOtp from "../pages/forgotPassword/ConfirmOtp";
 import ResetPassword from "../pages/forgotPassword/ResetPassword";
-// AppLayout has been moved to a separate file for fast refresh compatibility.
+
+const AppLayout = () => {
+  return (
+    <MovieProvider>
+      <DashBoard>
+        <ToastContainer autoClose={1000} />
+        <Outlet />
+      </DashBoard>
+    </MovieProvider>
+  );
+};
 
 export const appRouter = createBrowserRouter([
   {
@@ -59,7 +69,8 @@ export const appRouter = createBrowserRouter([
           {
             path: "/user/forgot-password/otp/confirm",
             element: <ResetPassword />,
-          }
+          },
+          ,
         ],
       },
     ],
