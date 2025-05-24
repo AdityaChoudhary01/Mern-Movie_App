@@ -80,30 +80,37 @@ const filteredMovies = async (req, res) => {
 };
 
 const addMovie = (req, res) => {
-  const { movie_image_URI } = req.body;
+  const { movie_image_URI, movie_title, movie_description, rating, genre } = req.body;
+  if (!movie_image_URI || !movie_image_URI.startsWith("data:image/")) {
+    return res.status(400).json({ message: "Invalid or missing image data" });
+  }
   try {
     cloudinary.uploader.upload(
       movie_image_URI,
       { folder: "posts" },
       async (err, result) => {
-        if (err)
-          return res.status(400).json({ message: "Image cannot be added" });
+        if (err) {
+          // Log the full error for diagnostics
+          console.error("Cloudinary upload error:", err);
+          // Return the actual error message to the client for debugging
+          return res.status(400).json({ message: "Image cannot be added", error: err.message || err });
+        }
         const newPost = new moviesModel({
           movie_image_URI: result.url,
-          movie_title: req?.body?.movie_title,
-          movie_description: req?.body?.movie_description,
-          rating: req?.body?.rating,
-          genre: req?.body?.genre,
+          movie_title,
+          movie_description,
+          rating,
+          genre,
         });
         await newPost.save();
         return res.status(200).json({ message: "added" });
       }
     );
   } catch (error) {
-    return res.status(400).json({ meaasge: error.message });
+    console.error("Add movie error:", error);
+    return res.status(400).json({ message: error.message });
   }
 };
-
 const editMovie = async (req, res) => {
   const { movie_image_URI, movie_title, movie_description, rating, genre } =
     req.body;
