@@ -1,7 +1,7 @@
+import { ToastContainer } from "react-toastify";
 import MovieProvider from "../utils/MovieContext";
 import DashBoard from "../components/DashBoard";
-import { createBrowserRouter } from "react-router-dom";
-import AppLayout from "../components/AppLayout";
+import { Outlet, createBrowserRouter } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
 import HomePage from "../pages/HomePage";
 import Genre from "../pages/Genre";
@@ -11,12 +11,23 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/forgotPassword/ForgotPassword";
 import {
   LoginProtectedRoute,
+  ProtectedRoutes,
   VerificationRouts,
 } from "./ProtectedRoutes";
 import ConfirmOtp from "../pages/forgotPassword/ConfirmOtp";
 import ResetPassword from "../pages/forgotPassword/ResetPassword";
 import "react-toastify/dist/ReactToastify.css";
-// AppLayout has been moved to ../components/AppLayout.jsx
+
+const AppLayout = () => {
+  return (
+    <MovieProvider>
+      <DashBoard>
+        <ToastContainer autoClose={1000} />
+        <Outlet />
+      </DashBoard>
+    </MovieProvider>
+  );
+};
 
 export const apRouter = createBrowserRouter([
   {
@@ -42,6 +53,7 @@ export const apRouter = createBrowserRouter([
           { path: "/register", element: <Register /> },
         ],
       },
+      ,
       {
         path: "/user/forgot-password",
         element: <ForgotPassword />,
@@ -57,7 +69,8 @@ export const apRouter = createBrowserRouter([
           {
             path: "/user/forgot-password/otp/confirm",
             element: <ResetPassword />,
-          }
+          },
+          ,
         ],
       },
     ],
